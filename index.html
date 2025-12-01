@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Bahasa Indonesia - SMKN 1 Cibatu Purwakarta</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        const questions = [
+            { number: 1, difficulty: "Mudah", cognitive: "C1", material: "Struktur Berita", stimulus: `FIFGROUP melalui program CSR MENYALA 2025 melaksanakan kegiatan literasi keuangan di SMKN 1 Cibatu Purwakarta pada Senin, 15 Januari 2025. Kegiatan yang diikuti oleh 250 siswa ini bertujuan untuk meningkatkan pemahaman generasi muda tentang pengelolaan keuangan.`, question: "Kalimat yang merupakan bagian orientasi (lead) dari kutipan berita tersebut adalah...", options: ["FIFGROUP melalui program CSR MENYALA 2025 melaksanakan kegiatan literasi keuangan di SMKN 1 Cibatu Purwakarta pada Senin, 15 Januari 2025.", "Kegiatan yang diikuti oleh 250 siswa ini bertujuan untuk meningkatkan pemahaman.", "Program CSR MENYALA 2025 bertujuan untuk literasi keuangan.", "Kegiatan literasi keuangan sangat bermanfaat bagi siswa.", "SMKN 1 Cibatu Purwakarta menjadi lokasi kegiatan."], answer: 0 },
+            { number: 2, difficulty: "Mudah", cognitive: "C1", material: "Struktur Berita", question: "Urutan struktur teks berita yang benar adalah...", options: ["Lead - Body - Tail (Piramida Terbalik)", "Orientasi - Komplikasi - Resolusi", "Tesis - Argumentasi - Penegasan", "Abstrak - Orientasi - Krisis - Reaksi - Koda", "Pembuka - Isi - Penutup"], answer: 0 },
+            { number: 3, difficulty: "Mudah", cognitive: "C2", material: "Unsur Berita (What)", stimulus: `Platform Merdeka Mengajar resmi diluncurkan oleh Kemendikdasmen untuk membantu guru mengembangkan kompetensi secara mandiri. Platform ini menyediakan berbagai pelatihan dan materi pembelajaran yang dapat diakses secara gratis.`, question: "Berdasarkan kutipan berita di atas, unsur 'what' (apa yang terjadi) dalam berita tersebut adalah...", options: ["Guru mengembangkan kompetensi secara mandiri", "Peluncuran Platform Merdeka Mengajar oleh Kemendikdasmen", "Platform menyediakan pelatihan gratis", "Kemendikdasmen membuat kebijakan baru", "Materi pembelajaran dapat diakses"], answer: 1 },
+            { number: 4, difficulty: "Mudah", cognitive: "C2", material: "Unsur Berita (When)", stimulus: `Pada Rabu, 20 November 2024, SMKN 1 Cibatu Purwakarta menggelar kegiatan Gebyar SMK dalam rangka memperingati Hari Guru Nasional. Kegiatan berlangsung mulai pukul 08.00 hingga 15.00 WIB di aula sekolah.`, question: "Unsur 'when' (kapan) dalam kutipan berita tersebut adalah...", options: ["Di aula sekolah", "SMKN 1 Cibatu Purwakarta", "Rabu, 20 November 2024", "Memperingati Hari Guru Nasional", "Gebyar SMK"], answer: 2 },
+            { number: 5, difficulty: "Mudah", cognitive: "C2", material: "Kalimat Langsung", stimulus: `"Program MENYALA ini sangat bermanfaat untuk meningkatkan literasi keuangan siswa SMK," ujar Kepala Sekolah SMKN 1 Cibatu Purwakarta.`, question: "Penanda kalimat langsung dalam kutipan berita tersebut adalah...", options: ["Kata 'ujar'", "Tanda petik dua (\"...\")", "Nama narasumber", "Kata 'sangat'", "Tanda koma"], answer: 1 },
+            { number: 6, difficulty: "Mudah", cognitive: "C2", material: "Konjungsi Temporal", stimulus: `Setelah mengikuti pelatihan literasi keuangan, para siswa kemudian mempraktikkan cara menyusun anggaran pribadi. Selanjutnya, mereka diminta membuat rencana keuangan untuk satu bulan ke depan.`, question: "Konjungsi temporal yang terdapat dalam kutipan berita tersebut adalah...", options: ["dan, atau, tetapi", "karena, sebab, akibatnya", "setelah, kemudian, selanjutnya", "meskipun, walaupun, namun", "supaya, agar, untuk"], answer: 2 },
+            { number: 7, difficulty: "Mudah", cognitive: "C2", material: "Jenis Berita", stimulus: `Gempa berkekuatan 6,2 SR mengguncang wilayah Cianjur, Jawa Barat, pada Senin siang. BMKG melaporkan gempa terjadi pada kedalaman 10 km dengan pusat gempa berada di darat. Belum ada laporan korban jiwa maupun kerusakan.`, question: "Berdasarkan karakteristiknya, kutipan tersebut termasuk jenis berita...", options: ["Soft news (berita ringan)", "Feature (berita khas)", "Hard news (berita keras)", "Editorial (tajuk rencana)", "Opini (artikel opini)"], answer: 2 },
+            { number: 8, difficulty: "Mudah", cognitive: "C2", material: "Fakta dan Opini", question: "Perhatikan pernyataan berikut:\n1) FIFGROUP meluncurkan program MENYALA 2025\n2) Program ini merupakan yang terbaik di Indonesia\n3) Sebanyak 6.300 guru menjadi sasaran program\n4) Kegiatan ini sangat luar biasa dan menakjubkan\n\nPernyataan yang termasuk FAKTA adalah...", options: ["1 dan 2", "1 dan 3", "2 dan 3", "2 dan 4", "3 dan 4"], answer: 1 },
+            { number: 9, difficulty: "Mudah", cognitive: "C2", material: "Lead Berita", question: "Fungsi lead (teras berita) dalam struktur teks berita adalah...", options: ["Memberikan kesimpulan dari seluruh isi berita", "Menyajikan intisari berita dan menarik perhatian pembaca", "Menjelaskan latar belakang peristiwa secara lengkap", "Memberikan pendapat wartawan tentang peristiwa", "Menyajikan data statistik yang mendukung berita"], answer: 1 },
+            { number: 10, difficulty: "Sedang", cognitive: "C4", material: "Ide Pokok Berita", stimulus: `Dalam rangka mewujudkan lulusan SMK yang siap kerja, Kemendikdasmen terus mendorong kerja sama antara SMK dan dunia usaha/industri. Berbagai program link and match telah diimplementasikan, termasuk magang industri, sertifikasi kompetensi, dan pengembangan kurikulum berbasis industri.`, question: "Ide pokok dari kutipan berita tersebut adalah...", options: ["Lulusan SMK banyak yang menganggur", "Kerja sama SMK dengan industri untuk mencetak lulusan siap kerja", "Program magang industri untuk siswa SMK", "Sertifikasi kompetensi bagi lulusan SMK", "Kemendikdasmen membuat kebijakan baru"], answer: 1 },
+            { number: 11, difficulty: "Sedang", cognitive: "C3", material: "Kalimat Efektif", question: "Perhatikan kalimat berikut:\n\"Para siswa-siswa sedang mengerjakan tugas dengan cara bersama-sama secara kelompok.\"\n\nKalimat tersebut tidak efektif karena...", options: ["Tidak memiliki subjek", "Tidak memiliki predikat", "Terdapat kata yang mubazir (pleonasme)", "Tidak memiliki keterangan", "Struktur kalimat tidak lengkap"], answer: 2 },
+            { number: 12, difficulty: "Sedang", cognitive: "C3", material: "Menulis Lead", question: "Informasi: Bupati Purwakarta meresmikan gedung baru SMKN 1 Cibatu pada hari Senin. Peresmian dilakukan di halaman sekolah dengan dihadiri oleh pejabat dinas pendidikan dan wali murid.\n\nLead berita yang paling tepat adalah...", options: ["Gedung baru SMKN 1 Cibatu sangat megah dan modern.", "Bupati Purwakarta meresmikan gedung baru SMKN 1 Cibatu pada Senin (15/1) di halaman sekolah.", "Wali murid sangat senang dengan peresmian gedung baru.", "Dinas pendidikan hadir dalam peresmian gedung.", "Peresmian gedung baru berlangsung meriah."], answer: 1 },
+            { number: 13, difficulty: "Sedang", cognitive: "C4", material: "Kelengkapan Unsur", stimulus: `Para siswa SMK se-Kabupaten Purwakarta mengikuti lomba kompetensi siswa tingkat provinsi. Kegiatan ini bertujuan untuk mengasah keterampilan dan mempersiapkan siswa menghadapi dunia kerja.`, question: "Unsur berita yang TIDAK terdapat dalam kutipan tersebut adalah...", options: ["What (apa)", "Who (siapa)", "Where (di mana) dan When (kapan)", "Why (mengapa)", "How (bagaimana)"], answer: 2 },
+            { number: 14, difficulty: "Sedang", cognitive: "C4", material: "Angle Berita", stimulus: `Meskipun cuaca tidak bersahabat, ribuan warga tetap antusias mengikuti Car Free Day di kawasan Purwakarta. Semangat mereka untuk hidup sehat tidak surut meski hujan mengguyur sejak pagi.`, question: "Angle (sudut pandang) yang digunakan dalam penulisan berita tersebut adalah...", options: ["Angle konflik - menonjolkan pertentangan", "Angle human interest - menonjolkan sisi kemanusiaan dan semangat", "Angle politik - menonjolkan kebijakan pemerintah", "Angle ekonomi - menonjolkan dampak finansial", "Angle kronologis - menonjolkan urutan waktu"], answer: 1 },
+            { number: 15, difficulty: "Mudah", cognitive: "C1", material: "Tokoh Cerpen", stimulus: `Cerpen "Bengkel dan Beasiswa"\n\nAndi menatap langit sore dari sudut bengkel ayahnya. Tangannya yang belepotan oli menggenggam erat surat pemberitahuan beasiswa dari sekolah. Air matanya menetes membasahi kertas itu.\n\n"Kamu harus tetap sekolah, Nak," kata Pak Joko, ayahnya, sambil meletakkan kunci pas.`, question: "Tokoh protagonis dalam kutipan cerpen tersebut adalah...", options: ["Pak Joko", "Andi", "Guru di sekolah", "Pemilik beasiswa", "Teman Andi"], answer: 1 },
+            { number: 16, difficulty: "Sedang", cognitive: "C2", material: "Latar Cerpen", stimulus: `Suara mesin gerinda yang nyaring memenuhi ruangan kecil itu. Aroma oli dan solar bercampur dengan udara sore yang lembap. Di sudut bengkel, Andi duduk di atas ban bekas sambil membaca buku pelajarannya.`, question: "Latar tempat yang tergambar dalam kutipan cerpen tersebut adalah...", options: ["Sekolah", "Rumah", "Bengkel", "Perpustakaan", "Taman"], answer: 2 },
+            { number: 17, difficulty: "Sedang", cognitive: "C2", material: "Alur Cerpen", stimulus: `Awalnya, Andi adalah siswa berprestasi yang hampir putus sekolah karena ayahnya sakit. Namun, berkat kegigihan dan bantuan beasiswa, ia berhasil menyelesaikan studinya. Kini, Andi telah menjadi teknisi sukses yang membangun bengkel modern untuk ayahnya.`, question: "Kutipan tersebut menggambarkan tahapan alur...", options: ["Pengenalan (eksposisi)", "Konflik (rising action)", "Klimaks", "Antiklimaks (falling action) dan resolusi", "Komplikasi"], answer: 3 },
+            { number: 18, difficulty: "Sedang", cognitive: "C2", material: "Tema Cerpen", stimulus: `Cerpen "Burung Dalam Sangkar Emas"\n\nSarah memandang koleksi piala di lemari kaca kamarnya. Semua adalah hasil kemenangan lomba piano yang dipaksakan ibunya. Ia merindukan lapangan sepak bola yang selalu dilihatnya dari jendela kamar.`, question: "Tema yang paling tepat untuk kutipan cerpen tersebut adalah...", options: ["Keberhasilan meraih prestasi", "Pentingnya belajar musik", "Kebebasan dalam menentukan pilihan hidup", "Perjuangan seorang atlet", "Kasih sayang ibu kepada anak"], answer: 2 },
+            { number: 19, difficulty: "Sedang", cognitive: "C2", material: "Sudut Pandang", stimulus: `Aku berdiri di depan pintu bengkel, memandang Ayah yang masih sibuk dengan motornya. Hatiku bergetar mengingat semua pengorbanannya untukku. "Ayah, aku berjanji akan membanggakanmu," bisikku dalam hati.`, question: "Sudut pandang yang digunakan dalam kutipan cerpen tersebut adalah...", options: ["Orang pertama pelaku utama (aku)", "Orang pertama pelaku sampingan", "Orang ketiga serba tahu", "Orang ketiga terbatas", "Campuran"], answer: 0 },
+            { number: 20, difficulty: "Sedang", cognitive: "C2", material: "Amanat Cerpen", stimulus: `Andi kini telah sukses. Bengkel kecil ayahnya telah berkembang menjadi bengkel modern. Setiap kali ada anak muda yang datang mencari pekerjaan, Andi selalu berkata, "Jangan pernah menyerah pada keadaan. Pendidikan adalah kunci, tapi kerja keras adalah jalannya."`, question: "Amanat yang dapat dipetik dari kutipan cerpen tersebut adalah...", options: ["Kekayaan adalah tujuan hidup", "Pendidikan dan kerja keras adalah kunci kesuksesan", "Memiliki bengkel adalah cita-cita yang baik", "Orang tua harus membiayai pendidikan anak", "Beasiswa harus diberikan kepada semua siswa"], answer: 1 },
+            { number: 21, difficulty: "Sedang", cognitive: "C4", material: "Penokohan", stimulus: `"Tidak, Bu. Aku tidak mau main piano lagi!" Sarah membanting partitur musiknya.\n\nIbunya tersentak, "Kamu tidak boleh begitu! Ibu sudah mengorbankan segalanya untuk lesmu!"\n\nSarah berlari ke kamarnya, membanting pintu keras-keras. Dari dalam, terdengar isak tangisnya yang tertahan.`, question: "Berdasarkan kutipan tersebut, watak tokoh Sarah dapat digambarkan sebagai...", options: ["Penyabar dan penurut", "Pemberontak namun sensitif", "Egois dan tidak tahu berterima kasih", "Pemalas dan tidak bertanggung jawab", "Ceria dan optimis"], answer: 1 },
+            { number: 22, difficulty: "Sedang", cognitive: "C3", material: "Nilai Moral", stimulus: `Pak Joko tidak pernah mengeluh meski harus bekerja hingga larut malam. Setiap kali Andi menawarkan bantuan, ia selalu berkata, "Belajarlah yang rajin. Biarkan Ayah yang bekerja. Tugasmu adalah meraih cita-citamu."`, question: "Nilai moral yang terkandung dalam kutipan cerpen tersebut adalah...", options: ["Nilai religius", "Nilai pengorbanan dan kasih sayang orang tua", "Nilai persahabatan", "Nilai nasionalisme", "Nilai hedonisme"], answer: 1 },
+            { number: 23, difficulty: "Sedang", cognitive: "C3", material: "Gaya Bahasa", stimulus: `Matahari sore tersenyum menyinari bengkel kecil itu. Angin berbisik membawa aroma khas oli yang telah menjadi sahabat Andi sejak kecil.`, question: "Gaya bahasa yang digunakan dalam kutipan cerpen tersebut adalah...", options: ["Metafora", "Personifikasi", "Hiperbola", "Simile", "Litotes"], answer: 1 },
+            { number: 24, difficulty: "Sedang", cognitive: "C4", material: "Perbandingan", question: "Perbedaan mendasar antara teks berita dan cerpen adalah...", options: ["Berita menggunakan bahasa baku, cerpen menggunakan bahasa tidak baku", "Berita bersifat faktual dan objektif, cerpen bersifat imajinatif dan subjektif", "Berita ditulis panjang, cerpen ditulis pendek", "Berita dibuat oleh wartawan, cerpen dibuat oleh siswa", "Berita tidak memiliki struktur, cerpen memiliki struktur"], answer: 1 },
+            { number: 25, difficulty: "HOTS", cognitive: "C5", material: "Kelayakan Berita", stimulus: `Berita A: "Artis X Ganti Warna Rambut, Netizen Heboh"\n\nBerita B: "Pemerintah Luncurkan Program Beasiswa untuk 10.000 Siswa SMK dari Keluarga Kurang Mampu"`, question: "Berdasarkan nilai berita dan kepentingan publik, berita yang lebih layak menjadi headline utama media nasional adalah...", options: ["Berita A, karena lebih menarik perhatian pembaca", "Berita A, karena membahas kehidupan artis terkenal", "Berita B, karena memiliki dampak signifikan terhadap kepentingan publik", "Kedua berita sama pentingnya", "Tidak ada yang layak menjadi headline"], answer: 2 },
+            { number: 26, difficulty: "HOTS", cognitive: "C5", material: "Objektifitas Berita", stimulus: `Berita X: "Kebijakan Baru Pemerintah Disambut Positif oleh Seluruh Lapisan Masyarakat. Menteri menyatakan kebijakan ini adalah yang terbaik sepanjang sejarah."\n\nBerita Y: "Kebijakan Baru Pemerintah Menuai Beragam Respons. Sebagian mendukung dengan alasan efektivitas, sementara sebagian lain mengkritik karena kurangnya sosialisasi."`, question: "Berita yang lebih objektif dan berimbang adalah...", options: ["Berita X, karena menyajikan berita positif", "Berita X, karena mengutip pernyataan menteri", "Berita Y, karena menyajikan berbagai sudut pandang secara berimbang", "Keduanya sama objektif", "Keduanya tidak objektif"], answer: 2 },
+            { number: 27, difficulty: "HOTS", cognitive: "C4", material: "Analisis Simbolis", stimulus: `Cerpen "Burung Dalam Sangkar Emas"\n\nSarah menatap burung kenari di sangkar emasnya. Burung itu memiliki segalanya: makanan berlimpah, sangkar indah, namun tidak pernah bisa terbang bebas. Persis seperti dirinya.`, question: "Keterkaitan antara judul, simbol burung, dan tokoh Sarah menunjukkan...", options: ["Sarah menyukai burung peliharaan", "Sangkar emas melambangkan kemewahan keluarga Sarah yang membuatnya terkekang", "Burung kenari adalah hadiah dari ibunya", "Sarah ingin memiliki banyak burung", "Sangkar emas adalah cita-cita Sarah"], answer: 1 },
+            { number: 28, difficulty: "HOTS", cognitive: "C5", material: "Makna Tersirat", stimulus: `"Piala-piala itu berkilau di lemari, tapi hatiku semakin redup setiap kali melihatnya," tulis Sarah dalam buku hariannya.`, question: "Makna tersirat dari kalimat tersebut adalah...", options: ["Sarah bangga dengan prestasi pianonya", "Piala-piala Sarah sudah kusam dan perlu dibersihkan", "Prestasi yang dipaksakan tidak membawa kebahagiaan", "Sarah ingin memenangkan lebih banyak piala", "Lemari piala Sarah terlalu kecil"], answer: 2 },
+            { number: 29, difficulty: "HOTS", cognitive: "C5", material: "Kritik Cerpen", stimulus: `Kutipan cerpen:\n"Andi adalah siswa teladan. Dia selalu juara kelas. Semua guru menyukainya. Dia juga anak yang baik. Tidak pernah berbuat nakal. Prestasinya selalu bagus."`, question: "Kelemahan unsur intrinsik dalam kutipan cerpen tersebut adalah...", options: ["Tidak memiliki alur yang jelas", "Penokohan terlalu datar (flat character) tanpa konflik dan kompleksitas", "Latar tempat tidak disebutkan", "Tidak menggunakan sudut pandang yang konsisten", "Tema tidak tersampaikan dengan baik"], answer: 1 },
+            { number: 30, difficulty: "HOTS", cognitive: "C6", material: "Kreativitas Judul", stimulus: `Isi cerpen: Seorang anak montir yang berjuang meraih beasiswa pendidikan, berhasil mengubah nasib keluarganya melalui kerja keras dan tidak pernah menyerah pada keadaan ekonomi yang sulit.`, question: "Judul yang paling efektif, informatif, dan menarik untuk cerpen tersebut adalah...", options: ["Anak Montir", "Beasiswa", "Mimpi di Balik Oli: Kisah Perjuangan Meraih Bintang", "Cerita Andi", "Kerja Keras"], answer: 2 }
+        ];
+
+        function App() {
+            const [section, setSection] = useState('form');
+            const [studentData, setStudentData] = useState({ name: '', class: '', gender: '' });
+            const [answers, setAnswers] = useState({});
+            const [currentQ, setCurrentQ] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [results, setResults] = useState(null);
+            const [emailSent, setEmailSent] = useState(false);
+            const [existingResult, setExistingResult] = useState(null);
+
+            const checkExistingAttempt = (name, kelas) => {
+                const key = `asesmen_${name.toLowerCase().trim()}_${kelas}`;
+                const existing = localStorage.getItem(key);
+                return existing ? JSON.parse(existing) : null;
+            };
+
+            const saveResult = (name, kelas, result) => {
+                const key = `asesmen_${name.toLowerCase().trim()}_${kelas}`;
+                localStorage.setItem(key, JSON.stringify(result));
+            };
+
+            useEffect(() => {
+                if (section !== 'exam') return;
+                const timer = setInterval(() => {
+                    setTimeLeft(prev => {
+                        if (prev <= 1) { clearInterval(timer); handleSubmit(); return 0; }
+                        return prev - 1;
+                    });
+                }, 1000);
+                return () => clearInterval(timer);
+            }, [section]);
+
+            const formatTime = (secs) => `${Math.floor(secs / 60).toString().padStart(2, '0')}:${(secs % 60).toString().padStart(2, '0')}`;
+
+            const handleStart = (e) => {
+                e.preventDefault();
+                if (!studentData.name || !studentData.class || !studentData.gender) { alert('Mohon lengkapi semua data!'); return; }
+                const existing = checkExistingAttempt(studentData.name, studentData.class);
+                if (existing) { setExistingResult(existing); setSection('blocked'); return; }
+                setSection('exam');
+            };
+
+            const selectAnswer = (idx) => setAnswers(prev => ({ ...prev, [currentQ]: idx }));
+
+            const handleSubmit = useCallback(() => {
+                if (section !== 'exam') return;
+                let correct = 0, incorrect = 0, unanswered = 0;
+                questions.forEach((q, i) => {
+                    const userAns = answers[i];
+                    if (userAns === undefined) unanswered++;
+                    else if (userAns === q.answer) correct++;
+                    else incorrect++;
+                });
+                const score = Math.round((correct / questions.length) * 100);
+                let grade, category;
+                if (score >= 90) { grade = 'A'; category = 'Sangat Baik'; }
+                else if (score >= 80) { grade = 'B'; category = 'Baik'; }
+                else if (score >= 70) { grade = 'C'; category = 'Cukup'; }
+                else if (score >= 60) { grade = 'D'; category = 'Kurang'; }
+                else { grade = 'E'; category = 'Sangat Kurang'; }
+                const resultData = { score, grade, category, correct, incorrect, unanswered, date: new Date().toLocaleString('id-ID'), studentName: studentData.name, studentClass: studentData.class, studentGender: studentData.gender };
+                saveResult(studentData.name, studentData.class, resultData);
+                setResults(resultData);
+                setSection('results');
+            }, [answers, section, studentData]);
+
+            const sendEmail = () => {
+                const r = results;
+                const subject = encodeURIComponent(`Hasil Asesmen Bahasa Indonesia - ${studentData.name} (${studentData.class})`);
+                const body = encodeURIComponent(`HASIL ASESMEN BAHASA INDONESIA\nSMKN 1 Cibatu Purwakarta\n================================\n\nDATA PESERTA DIDIK:\n- Nama: ${studentData.name}\n- Kelas: ${studentData.class}\n- Jenis Kelamin: ${studentData.gender}\n\nHASIL ASESMEN:\n- Tanggal: ${r.date}\n- Nilai: ${r.score}\n- Predikat: ${r.grade} (${r.category})\n\nRINCIAN:\n- Benar: ${r.correct} soal\n- Salah: ${r.incorrect} soal\n- Tidak Dijawab: ${r.unanswered} soal\n\n================================\nTahun Pelajaran 2025/2026`);
+                window.open(`mailto:nurhayati632@guru.smk.belajar.id?subject=${subject}&body=${body}`);
+                setEmailSent(true);
+            };
+
+            const optLabels = ['A', 'B', 'C', 'D', 'E'];
+
+            if (section === 'blocked') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+                            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span className="text-4xl">⚠️</span>
+                            </div>
+                            <h2 className="text-2xl font-bold text-red-600 mb-4">Akses Ditolak</h2>
+                            <p className="text-gray-600 mb-6"><strong>{studentData.name}</strong> dari kelas <strong>{studentData.class}</strong> sudah pernah mengerjakan asesmen ini.</p>
+                            <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                                <p className="text-sm text-gray-500 mb-2">Hasil sebelumnya:</p>
+                                <p className="text-4xl font-bold text-blue-900">{existingResult?.score}</p>
+                                <p className="text-lg font-semibold text-yellow-600">Predikat: {existingResult?.grade}</p>
+                                <p className="text-sm text-gray-500 mt-2">Dikerjakan: {existingResult?.date}</p>
+                            </div>
+                            <p className="text-sm text-red-500 font-medium">⚠️ Asesmen hanya dapat dikerjakan 1 kali</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (section === 'form') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+                        <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white py-10 px-4 text-center">
+                            <h1 className="text-3xl font-extrabold mb-2">📚 Asesmen Bahasa Indonesia</h1>
+                            <p className="opacity-90 text-lg">Materi Teks Berita dan Cerpen</p>
+                            <span className="inline-block mt-3 px-5 py-2 bg-white/20 rounded-full text-sm font-medium">SMKN 1 Cibatu Purwakarta</span>
+                        </div>
+                        <div className="max-w-2xl mx-auto p-4 -mt-6">
+                            <div className="bg-white rounded-2xl shadow-xl p-6 mb-4 border-l-4 border-blue-600">
+                                <h2 className="text-xl font-bold text-blue-900 mb-4">📋 Informasi Ujian</h2>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {[['Mata Pelajaran', 'Bahasa Indonesia'], ['Kelas', 'XI (Sebelas)'], ['Jumlah Soal', '30 Pilihan Ganda'], ['Waktu', '90 Menit'], ['Materi', 'Berita & Cerpen'], ['Tahun Pelajaran', '2025/2026']].map(([label, value]) => (
+                                        <div key={label} className="bg-slate-50 p-4 rounded-xl"><p className="text-xs text-slate-500 uppercase">{label}</p><p className="font-bold text-blue-900">{value}</p></div>
+                                    ))}
+                                </div>
+                                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <p className="text-red-600 font-semibold text-sm">⚠️ PERHATIAN: Asesmen hanya dapat dikerjakan 1 KALI!</p>
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-2xl shadow-xl p-6">
+                                <h2 className="text-xl font-bold text-blue-900 mb-6">✍️ Data Peserta Didik</h2>
+                                <form onSubmit={handleStart}>
+                                    <div className="mb-5">
+                                        <label className="block font-semibold mb-2 text-slate-700">Nama Lengkap *</label>
+                                        <input type="text" className="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none" placeholder="Masukkan nama lengkap sesuai absen" value={studentData.name} onChange={e => setStudentData(prev => ({ ...prev, name: e.target.value }))} required />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <div>
+                                            <label className="block font-semibold mb-2 text-slate-700">Kelas *</label>
+                                            <select className="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none bg-white" value={studentData.class} onChange={e => setStudentData(prev => ({ ...prev, class: e.target.value }))} required>
+                                                <option value="">-- Pilih Kelas --</option>
+                                                <option value="XI MP 1">XI MP 1</option>
+                                                <option value="XI MP 2">XI MP 2</option>
+                                                <option value="XI TKR 1">XI TKR 1</option>
+                                                <option value="XI TKR 2">XI TKR 2</option>
+                                                <option value="XI TM 4">XI TM 4</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block font-semibold mb-2 text-slate-700">Jenis Kelamin *</label>
+                                            <select className="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none bg-white" value={studentData.gender} onChange={e => setStudentData(prev => ({ ...prev, gender: e.target.value }))} required>
+                                                <option value="">-- Pilih --</option>
+                                                <option value="Laki-laki">Laki-laki</option>
+                                                <option value="Perempuan">Perempuan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" className="w-full py-4 bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-xl font-bold text-lg hover:shadow-xl transition">🚀 Mulai Ujian</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (section === 'exam') {
+                const q = questions[currentQ];
+                const diffColor = q.difficulty === 'Mudah' ? 'bg-green-100 text-green-700' : q.difficulty === 'Sedang' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700';
+                return (
+                    <div className="min-h-screen bg-slate-100">
+                        <div className="sticky top-0 bg-white shadow-lg p-4 z-10 border-b-4 border-blue-600">
+                            <div className="max-w-3xl mx-auto flex justify-between items-center">
+                                <div>
+                                    <div className={`text-2xl font-extrabold ${timeLeft <= 300 ? 'text-red-600 animate-pulse' : timeLeft <= 600 ? 'text-yellow-600' : 'text-blue-900'}`}>⏱️ {formatTime(timeLeft)}</div>
+                                    <div className="h-2 bg-slate-200 rounded-full mt-2 w-40 overflow-hidden"><div className="h-full bg-gradient-to-r from-blue-600 to-green-500 rounded-full transition-all" style={{ width: `${(Object.keys(answers).length / 30) * 100}%` }}></div></div>
+                                </div>
+                                <div className="text-right"><p className="text-slate-600 font-medium">{Object.keys(answers).length}/30</p><p className="text-xs text-slate-400">Terjawab</p></div>
+                            </div>
+                        </div>
+                        <div className="max-w-3xl mx-auto p-4">
+                            <div className="bg-white rounded-2xl shadow-lg p-6 mb-4">
+                                <div className="flex flex-wrap items-center gap-2 mb-4">
+                                    <span className="px-4 py-2 bg-blue-900 text-white rounded-full text-sm font-bold">Soal {q.number}/30</span>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${diffColor}`}>{q.difficulty}</span>
+                                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">{q.cognitive}</span>
+                                    <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs">{q.material}</span>
+                                </div>
+                                {q.stimulus && (<div className="bg-amber-50 border-l-4 border-amber-400 p-5 rounded-r-xl mb-5"><p className="text-xs font-bold text-amber-600 uppercase mb-3">📖 Bacalah kutipan berikut!</p><p className="text-slate-700 italic leading-relaxed whitespace-pre-line">{q.stimulus}</p></div>)}
+                                <p className="text-lg font-semibold mb-5 text-slate-800 leading-relaxed whitespace-pre-line">{q.question}</p>
+                                <div className="space-y-3">
+                                    {q.options.map((opt, idx) => (
+                                        <label key={idx} className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${answers[currentQ] === idx ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'}`} onClick={() => selectAnswer(idx)}>
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${answers[currentQ] === idx ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'}`}>{optLabels[idx]}</div>
+                                            <span className="text-slate-700 pt-1">{opt}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-2xl shadow p-4 mb-4">
+                                <p className="text-sm text-slate-500 mb-3 font-medium">Navigasi Soal</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {questions.map((_, i) => (<button key={i} onClick={() => setCurrentQ(i)} className={`w-10 h-10 rounded-full text-sm font-bold transition-all ${i === currentQ ? 'ring-4 ring-yellow-400 ring-offset-2' : ''} ${answers[i] !== undefined ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{i + 1}</button>))}
+                                </div>
+                            </div>
+                            <div className="flex gap-3">
+                                <button onClick={() => setCurrentQ(Math.max(0, currentQ - 1))} disabled={currentQ === 0} className="flex-1 py-4 bg-slate-200 text-slate-700 rounded-xl font-bold disabled:opacity-50 hover:bg-slate-300 transition">← Sebelumnya</button>
+                                {currentQ < 29 ? (<button onClick={() => setCurrentQ(currentQ + 1)} className="flex-1 py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition">Selanjutnya →</button>) : (<button onClick={() => { const unanswered = 30 - Object.keys(answers).length; if (window.confirm(unanswered > 0 ? `Masih ada ${unanswered} soal belum dijawab. Yakin ingin mengumpulkan?` : 'Yakin ingin mengumpulkan jawaban?')) handleSubmit(); }} className="flex-1 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition">✅ Kumpulkan</button>)}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (section === 'results' && results) {
+                const getGradeColor = () => { if (results.score >= 80) return 'from-green-500 to-emerald-600'; if (results.score >= 70) return 'from-blue-500 to-blue-600'; if (results.score >= 60) return 'from-yellow-500 to-orange-500'; return 'from-red-500 to-red-600'; };
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-blue-50">
+                        <div className={`bg-gradient-to-r ${getGradeColor()} text-white py-12 px-4 text-center`}>
+                            <h2 className="text-2xl font-bold mb-2">Hasil Asesmen</h2>
+                            <p className="text-lg opacity-90">{studentData.name}</p>
+                            <p className="opacity-80">{studentData.class}</p>
+                            <div className="w-40 h-40 mx-auto my-8 bg-white rounded-full flex flex-col items-center justify-center shadow-2xl">
+                                <span className="text-5xl font-extrabold text-slate-800">{results.score}</span>
+                                <span className="text-slate-500 font-medium">Nilai</span>
+                            </div>
+                            <div className="inline-block px-8 py-3 bg-white/20 backdrop-blur rounded-full">
+                                <span className="text-2xl font-bold">Predikat: {results.grade}</span>
+                                <span className="block text-sm opacity-90">{results.category}</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4 mt-8 max-w-sm mx-auto">
+                                <div className="bg-white/20 backdrop-blur rounded-xl p-4"><p className="text-3xl font-bold">{results.correct}</p><p className="text-sm opacity-80">Benar</p></div>
+                                <div className="bg-white/20 backdrop-blur rounded-xl p-4"><p className="text-3xl font-bold">{results.incorrect}</p><p className="text-sm opacity-80">Salah</p></div>
+                                <div className="bg-white/20 backdrop-blur rounded-xl p-4"><p className="text-3xl font-bold">{results.unanswered}</p><p className="text-sm opacity-80">Kosong</p></div>
+                            </div>
+                        </div>
+                        <div className="max-w-lg mx-auto p-4 -mt-6">
+                            <div className="bg-white rounded-2xl shadow-xl p-6 mb-4">
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"><span className="text-3xl">📧</span></div>
+                                    <h3 className="text-xl font-bold text-slate-800">Kirim Hasil ke Guru</h3>
+                                    <p className="text-sm text-slate-500 mt-1">nurhayati632@guru.smk.belajar.id</p>
+                                </div>
+                                <button onClick={sendEmail} className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg transition">📤 Kirim via Email</button>
+                                {emailSent && (<div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl text-center"><p className="text-green-600 font-medium">✅ Email client terbuka!</p><p className="text-sm text-green-500">Silakan klik Kirim di aplikasi email Anda</p></div>)}
+                            </div>
+                            <div className="bg-white rounded-2xl shadow-xl p-6">
+                                <div className="text-center"><p className="text-slate-600 mb-2">Tanggal Pengerjaan:</p><p className="font-bold text-slate-800 text-lg">{results.date}</p></div>
+                                <hr className="my-6" />
+                                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4"><p className="text-amber-700 text-sm text-center"><strong>📌 Catatan:</strong><br />Hasil asesmen ini telah tersimpan. Anda tidak dapat mengerjakan ulang asesmen ini.</p></div>
+                            </div>
+                            <div className="mt-6 text-center text-slate-400 text-sm"><p>SMKN 1 Cibatu Purwakarta</p><p>Tahun Pelajaran 2025/2026</p></div>
+                        </div>
+                    </div>
+                );
+            }
+            return null;
+        }
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
